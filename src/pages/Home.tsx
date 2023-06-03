@@ -13,7 +13,7 @@ const Home: React.FC = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    inputText: text,
+                    inputs: text,
                 }),
             });
             if (response.ok) {
@@ -26,7 +26,7 @@ const Home: React.FC = () => {
             console.error(error);
         }
     };
-    const deobfuscate = () => {
+    const deobfuscate = async () => {
        try {
             const response = await fetch("https://obfuscate-kuzz4.ondigitalocean.app/tc-obfuscate/deobfuscate", {
                 method: "POST",
@@ -34,7 +34,7 @@ const Home: React.FC = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    inputText: text,
+                    inputs: text,
                 }),
             });
             if (response.ok) {
