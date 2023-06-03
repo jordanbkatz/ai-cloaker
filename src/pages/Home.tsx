@@ -1,38 +1,56 @@
 import { useState } from 'react';
 
-const hiddenChar = '\u034F';
-
 const Home: React.FC = () => {
     const [text, setText] = useState("");
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setText(e.target.value);
     }
-    const cloak = () => {
-        let chars = text.split('');
-        let temp = [];
-        for (let i = 0; i < chars.length; i++) {
-            if (chars[i] !== hiddenChar) {
-                temp.push(chars[i]);
+   const obfuscate = async () => {
+        try {
+            const response = await fetch("https://obfuscate-kuzz4.ondigitalocean.app/tc-obfuscate/obfuscate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    inputText: text,
+                }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setText(data.modifiedData);
+            } else {
+                throw new Error("Request failed");
             }
-            if (Math.random() < 0.05) {
-                temp.push(hiddenChar);
-            }
+        } catch (error) {
+            console.error(error);
         }
-        setText(temp.join(''));
     };
-    const decloak = () => {
-        let chars = text.split('');
-        let temp = [];
-        for (let i = 0; i < chars.length; i++) {
-            if (chars[i] !== hiddenChar) {
-                temp.push(chars[i]);
+    const deobfuscate = () => {
+       try {
+            const response = await fetch("https://obfuscate-kuzz4.ondigitalocean.app/tc-obfuscate/deobfuscate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    inputText: text,
+                }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setText(data.modifiedData);
+            } else {
+                throw new Error("Request failed");
             }
+        } catch (error) {
+            console.error(error);
         }
-        setText(temp.join(''));
     };
     const copy = () => {
         navigator.clipboard.writeText(text);
     };
+    
     return (
         <div className="home">
             <div className="header">
@@ -45,8 +63,8 @@ const Home: React.FC = () => {
                 spellCheck={false}
             />
             <div className="actions">
-                <button onClick={decloak}>Uncloak</button>
-                <button onClick={cloak}>Cloak</button>
+                <button onClick={deobfuscate}>Uncloak</button>
+                <button onClick={obfuscate}>Cloak</button>
                 <button onClick={copy}>Copy</button>
             </div>
         </div>
